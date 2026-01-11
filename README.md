@@ -1,5 +1,5 @@
 # yolo_trainer
-This repository provides a clean, containerized environment for training **Ultralytics YOLOv11** models using Docker.
+This repository provides a tool for training **Ultralytics YOLOv11** models using Docker.
 
 ***This tool requires GPU***
 
