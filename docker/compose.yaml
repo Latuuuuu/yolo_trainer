@@ -7,7 +7,9 @@ services:
     
     container_name: yolo_trainer
     ipc: host
-    
+    working_dir: /usr/src
+    network_mode: host
+    runtime: nvidia
     deploy:
       resources:
         reservations:
@@ -15,8 +17,13 @@ services:
             - driver: nvidia
               count: all
               capabilities: [gpu]
-
+    environment:
+      - NVIDIA_VISIBLE_DEVICES=all
+      - DISPLAY=${DISPLAY}
     volumes:
       - ../datasets:/usr/src/datasets  
-      - ../runs:/usr/src/app/runs      
-      - ../train.py:/usr/src/app/train.py
+      - ..:/usr/src
+      - /tmp/.X11-unix:/tmp/.X11-unix 
+    tty: true
+    stdin_open: true
+    command: tail -f /dev/null
