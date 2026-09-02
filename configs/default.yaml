@@ -1,0 +1,35 @@
+# Default training config.
+# Copy this file, rename it, and edit — do not edit train.py.
+#   python train.py --config configs/my_experiment.yaml
+#
+# Paths are relative to the repository root (they also accept absolute paths).
+# Everything under `args` is passed straight to Ultralytics `model.train()`,
+# so any option from https://docs.ultralytics.com/modes/train/#train-settings
+# can be added here without touching the code.
+
+# Pretrained weights (.pt) or a model architecture (.yaml).
+#   yolo11n.pt      -> detection, downloaded automatically on first run
+#   yolo11n-obb.pt  -> oriented bounding boxes (OBB)
+#   models/yolo11-obb.yaml -> train a custom architecture from scratch
+model: yolo11n.pt
+
+# Dataset descriptor. See README "Dataset preparation".
+data: datasets/table_tennis/data.yaml
+
+args:
+  epochs: 300        # total training epochs
+  imgsz: 640         # training image size; 1280 is sharper on small objects but ~4x slower
+  batch: 8           # lower this first if you hit CUDA out of memory
+  device: 0          # GPU index; "0,1" for two GPUs
+  workers: 8         # dataloader workers; lower to 2-4 on machines with little RAM
+  patience: 100      # stop early if val metrics do not improve for this many epochs
+
+  project: runs      # results go to <project>/<name>/
+  name: exp          # run name; a suffix is added automatically if it already exists
+
+  # Common extras (uncomment as needed):
+  # optimizer: SGD   # auto | SGD | Adam | AdamW
+  # lr0: 0.01        # initial learning rate
+  # cos_lr: true     # cosine learning-rate schedule
+  # close_mosaic: 10 # disable mosaic augmentation for the last N epochs
+  # resume: false    # continue an interrupted run (also available as `--resume`)

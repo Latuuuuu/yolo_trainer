@@ -1,14 +1,28 @@
+# Explicit project name: without it compose derives it from the folder name
+# ("docker"), which collides with any other docker/ compose project on the machine.
+name: yolo_trainer
+
 services:
   yolo-train:
-    user: "${UID}:${GID}"
     build:
-      context: ..            
+      context: ..
       dockerfile: docker/Dockerfile
-    
+      # args:
+      #   ULTRALYTICS_TAG: 8.4.33   # pin the base image once your setup works
+    image: yolo_trainer:latest
     container_name: yolo_trainer
-    ipc: host
+
+    # Run as the host user so files written to runs/ are owned by you, not root.
+    # setup.sh writes these values into docker/.env.
+    user: "${UID:-1000}:${GID:-1000}"
+
+    # The whole repository is mounted, so code, datasets, imgs and runs are
+    # shared live between host and container.
+    volumes:
+      - ..:/usr/src
+      - /tmp/.X11-unix:/tmp/.X11-unix
     working_dir: /usr/src
-    network_mode: host
+
     runtime: nvidia
     deploy:
       resources:
@@ -19,11 +33,11 @@ services:
               capabilities: [gpu]
     environment:
       - NVIDIA_VISIBLE_DEVICES=all
-      - DISPLAY=${DISPLAY}
-    volumes:
-      - ../datasets:/usr/src/datasets  
-      - ..:/usr/src
-      - /tmp/.X11-unix:/tmp/.X11-unix 
+      - DISPLAY=${DISPLAY:-}
+      - QT_X11_NO_MITSHM=1
+
+    ipc: host           # shared memory for the dataloader workers
+    network_mode: host
     tty: true
     stdin_open: true
     command: tail -f /dev/null

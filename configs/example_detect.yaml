@@ -1,0 +1,18 @@
+# Example: plain axis-aligned detection (table tennis, 5 classes).
+# Run with:
+#   python train.py --config configs/example_detect.yaml
+
+model: yolo11n.pt
+data: datasets/table_tennis/data.yaml
+
+args:
+  epochs: 300
+  imgsz: 1280        # the ball is small, so a large input size helps a lot
+  batch: 8
+  device: 0
+  patience: 150
+
+  project: runs
+  name: table_tennis_1280
+
+  close_mosaic: 50   # last 50 epochs without mosaic, so the model sees real layouts

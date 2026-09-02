@@ -1,0 +1,11 @@
+# The repository is bind-mounted at runtime, so nothing needs to enter the
+# build context. Keeping it small makes `docker compose build` fast.
+.git/
+datasets/
+imgs/
+runs/
+weights/
+*.pt
+*.onnx
+*.engine
+__pycache__/
